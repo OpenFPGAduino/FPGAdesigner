@@ -26,176 +26,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <title>Editor</title>
-  <style type="text/css" media="screen">
-
-    .ace_editor {
-        position: relative !important;
-        border: 1px solid lightgray;
-        margin: 0;
-        height: 600px;
-        width: 100%;
-    }
-
-    .ace_editor.fullScreen {
-        height: auto;
-        width: auto;
-        border: 0;
-        margin: 0;
-        position: fixed !important;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-        background: white;
-    }
-
-    .fullScreen {
-        overflow: hidden
-    }
-
-    .scrollmargin {
-	height: inherit;
-	text-align: left;
-    }
-
-</style>
+    
 </head>
 <body>
-<img id=broadpic alt="">
-<div id="IDE" class="">
-  <a href="#savedialog" role="button" class="btn" data-toggle="modal" title="save the program">save</a>
-  <span onclick="run()" class="btn btn-success" title="run the program">
-    run
-  </span>
-  <span onclick="stop()" class="btn btn-warning" title="stop the progrtam">
-    stop
-  </span>
-  <a href="#api_doc" role="button" class="btn btn-info" data-toggle="modal" onclick="load_api()" title="show the API">API</a>
-  <span onclick="reboot()" class="btn btn-danger" title="reboot the broad">
-    reboot
-  </span>
-  <span>
-  <div class="btn-group">
-<button type="button" class="btn btn-primary" title="change the broad configuration">
-Configurations
-</button>
-<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-    <span class="caret"></span>
-</button>
-  <ul id=version_list class="dropdown-menu" role="menu">
-  </ul>
-</div>
-</span>
-<pre id="editor">
-int main(int argn, char* argv[])
-{
-	printf("openFPGArduino\n");
-	return 0;
-}
-</pre>
-</div>
-<div id=Ex>
-</div>
-<div class="panel panel-default">
-<span onclick="clean_error()" class="btn btn-warning" title="clear the error log">
-    Clear error
-	</span>
-<div class="panel-heading">
-    <a data-toggle="collapse" data-parent="#accordion" href="#error">
-    <div class="alert alert-error" role="alert"><b>Error</b>
-    </div>
-    </a>
-</div>
-<div id="error" class="panel-collapse collapse in">
-  </div>
-</div>
-</div>
-<div>
 
-<div class="panel panel-default">
-<span onclick="clean_console()" class="btn btn-warning" title="clear the console log">
-    Clear console
-	</span>
-<div class="panel-heading">
-    <a data-toggle="collapse" data-parent="#accordion" href="#console">
-    <div class="alert alert-info" role="alert"><b>Console</b>
-    </div>
-    </a>
-</div>
-<div id="console" class="panel-collapse collapse in">
-  </div>
-</div>
-</div>
-<div>
 
-<!-- Save file dialog -->
-<div class="modal hide fade" id="savedialog">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal">&times;</button>
-<h3>Save the program</h3>
-</div>
-<div class="modal-body">
-<div class="input-group">
-  <input id="dialog_filename" type="text" class="form-control" placeholder="filename">
-    <span class="input-group-addon">.c</span>
-</div>
-</div>
-<div class="modal-footer">
-<a href="#"  data-dismiss="modal" class="btn">close</a>
-<a href="#"  data-dismiss="modal" class="btn btn-primary" onclick="save()" >save</a>
-</div>
-</div>
-
-<!-- pop dialog -->
-<div class="modal hide fade" id="popdialog">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal">&times;</button>
-<h3>Are you sure to delete?</h3>
-</div>
-<div class="modal-body">
-<div class="input-group">
-<p id="pop_message"></p>
-</div>
-</div>
-<div class="modal-footer">
-<a href="#"  data-dismiss="modal" class="btn">No</a>
-<a href="#"  data-dismiss="modal" class="btn btn-primary" onclick="do_delete_example()" >Yes</a>
-</div>
-</div>
-
-<!-- API reference doc-->
-<div id="api_doc" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="ModalLabel">API Reference Document</h3>
-    </div>
-    <div class="modal-body">
-      <div class="panel-group" id="accordion">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                <div class="alert alert-info" role="alert"><b>void led(int id, char r, char g, char b)</b></div>
-                </a>
-            </div>
-            <div id="collapse1" class="panel-collapse collapse">
-              <div class="panel-body">
-                  <p>Functionality: Sleep for seconds</p>
-                  <p>Argument: </p>
-                  <p>id: The id of led can be 0-3</p>
-                  <p>r: The red color of led</p>
-                  <p>g: The greem color of led</p>
-                  <p>b: The blue color of led</p>
-              </div>
-            </div>
-          </div>
-    </div>
-    <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">close</button>
-    </div>
-</div>
-
-<script src="./ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var debug = false;
 	function debuginf(string) {
@@ -218,26 +53,6 @@ int main(int argn, char* argv[])
 		debuginf(xhr.status);	
 	}
 
-	function load_config_list() {
-		var xhr = new XMLHttpRequest();	
-		xhr.open("get","load_config",false);
-		xhr.send();
-		var versionlist = xhr.responseText;
-		debuginf(versionlist);
-		var list = versionlist.split(',');
-		var html_list = "";
-		debuginf(list);
-		for (var index in list) {
-			debuginf(list[index]);
-			var name = list[index].split('.')[0];
-			var ext  = list[index].split('.')[1];
-			if (ext == 'jpg') {
-				html_list += "<li><a href='#' onClick= configrations(event)>"+ 
-				name +"</a></li>";
-			}
-		}
-		document.getElementById("version_list").innerHTML = html_list;
-	}
 	function load_example_list() {
 		var xhr = new XMLHttpRequest();	
 		xhr.open("get","load_example",false);
@@ -257,6 +72,16 @@ int main(int argn, char* argv[])
 		document.getElementById("Ex").innerHTML = html_list;
 	}
 	
+	function get_design_part(verilog)
+	{
+		var verilog_lines = verilog.split('\n');
+		var re = new RegExp("<Web_desing_part_start>");
+		return str.match(re);
+		var re = new RegExp("</Web_desing_part_start>");
+		return str.match(re);
+
+	}
+	
 	function is_function_type(str)
 	{
 		var re = new RegExp("\\.*\\s([^\\(\\s]+)\\(.*\\);");
@@ -271,7 +96,7 @@ int main(int argn, char* argv[])
 	
 	function load_api() {
 		var xhr = new XMLHttpRequest();	
-		xhr.open("get","api/openFPGArduino.h",false);
+		xhr.open("get","grid.v",false);
 		xhr.send();
 		var api_doc = xhr.responseText;
 		debuginf(api_doc);

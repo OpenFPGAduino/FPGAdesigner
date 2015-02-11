@@ -39,6 +39,7 @@ for (index in arguments)
 
 var console_message = "";
 var error_message = "";
+
 http.createServer(function (req, res) {
 	var pathname=__dirname+url.parse(req.url).pathname;
 	var version = '';
@@ -49,7 +50,7 @@ http.createServer(function (req, res) {
 	// response of run command
 	
 	if (path.basename(pathname) =="save") {
-		debuginf("save the code");
+		debuginf("save the design");
 		pathname = path.dirname(pathname);
 
 		  req.setEncoding("utf8");
@@ -66,12 +67,12 @@ http.createServer(function (req, res) {
 		  code = code.arg2;
 		  debuginf(code);
 		  debuginf(filename);
-		  fs.writeFileSync('program/'+ filename +'.c', code);
+		  fs.writeFileSync('packeg/'+ filename +'.v', code);
         });
 	}
 	
 	if (path.basename(pathname) =="delete") {
-		debuginf("delete the code");
+		debuginf("delete the design");
 		pathname = path.dirname(pathname);
 
 		  req.setEncoding("utf8");
@@ -86,60 +87,17 @@ http.createServer(function (req, res) {
 		  debuginf(code);
 		  filename = code.arg1;
 		  debuginf(filename);
-		  fs.unlink('program/'+ filename +'.c');
+		  fs.unlink('program/'+ filename +'.v');
         });
 	}
 	
-	if (path.basename(pathname) == "load_config") {
-		var list = fs.readdirSync("config");
-		var versionlist = list.toString();
-		debuginf(versionlist);
-		res.writeHead(200, {"Content-Type": "text/html"});
-		res.end(versionlist);
-	}
-	
-	if (path.basename(pathname) == "load_example") {
-		var list = fs.readdirSync("program");
-		var programlist = list.toString();
-		debuginf(programlist);
-		res.writeHead(200, {"Content-Type": "text/html"});
-		res.end(programlist);
-	}
-	
-	if (path.basename(pathname) =="config") {
-		debuginf("config fpga");
-		pathname = path.dirname(pathname);
+	if (path.basename(pathname) =="download") {
+		debuginf("downlaod the file");
 
-	      req.setEncoding("utf8");
-	      req.addListener("data",function(postDataChunk){
-	      version += postDataChunk;
-              });
-	      req.setEncoding("utf8");
-	      req.addListener("end",function(postDataChunk){
-	      version += postDataChunk;
-	      debuginf(version);
-		  version = querystring.parse(version); 
-		  debuginf(version);
-		  version = version.arg1;
-	      debuginf(version);
-          if(simulation==true){
-                console_message += "fpga config ok";
-          } else {
-	      p.exec('$(pwd)/fpga_config.sh ' + 'config/' + version +'.rbf',
-      	      function (error,stdout,stderr) {
-	      		if (error !== null) {
-
-	      		}
-				console_message += stdout;
-				error_message += stderr;
-	      });
-          }
-		 });
 	}
 
-	var gcc=true;
-	if (path.basename(pathname) =="run") {
-		debuginf("run the code");
+	if (path.basename(pathname) =="generate") {
+		debuginf("synthsis the design");
 		pathname = path.dirname(pathname);
 
 	      req.setEncoding("utf8");
@@ -156,7 +114,6 @@ http.createServer(function (req, res) {
 	      
 	      debuginf(code);
               fs.writeFileSync('main.c', code);	      
-	      if (gcc == true) {
 	      var command;
               if (simulation == true)
               {
@@ -184,44 +141,9 @@ http.createServer(function (req, res) {
         	      	      });
         	      	    } 
         	  });
-	      } else {
-              p.exec('$(pwd)/Aduninoshell main.c ',
-	      	      function (error,stdout,stderr) {
-		      		if (error !== null) {
-		      		  debuginf('program stop:');
-		      	    }
-					console_message += stdout;
-					error_message += stderr;
-	      
-	          });
-	      }
         });
 	}
-	// response of stop command
-	if (path.basename(pathname) =="stop") {
-	      if (gcc == true) {
-		      p.exec('ps -ef |grep main |grep -v grep|awk \'{print $2}\' | xargs kill -9',
-	      	      function (error,stdout,stderr) {
-			        debuginf("stop");
-	                debuginf(stdout);
-		      });
-	      } else {
-		      p.exec('ps -ef |grep meteroi |grep -v grep|awk \'{print $2}\' | xargs kill -9',
-		      	      function (error,stdout,stderr) {
-				        debuginf("stop");
-		                debuginf(stdout);
-			      });	    	  
-	      
-	      }
-	}
-	// response of reboot command
-	if (path.basename(pathname) =="reboot") {
-	      p.exec('sudo reboot',
-      	      function (error,stdout,stderr) {
-		        console.log("reboot");
-		        debuginf(stdout);
-	      });
-	}
+
 	// response of error message
 	if (path.basename(pathname) =="error") {
 		res.writeHead(200, {"Content-Type": "text/html"});
@@ -267,10 +189,7 @@ http.createServer(function (req, res) {
 				case ".png":
 					res.writeHead(200, {"Content-Type": "image/png"});
 					break;
-				case ".c":
-					res.writeHead(200, {"Content-Type": "text/html"});
-					break;
-				case ".h":
+				case ".v":
 					res.writeHead(200, {"Content-Type": "text/html"});
 					break;
 				default:

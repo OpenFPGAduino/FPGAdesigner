@@ -422,18 +422,19 @@ frontier	b2v_inst(
 	.led_f3_G(LED_F3G),
 	.led_f3_B(LED_F3B),
 
-   .step_motor_driver_0_AX (AX_step_motor_0), // step_motor_driver_0.AX
-   .step_motor_driver_0_AY (AY_step_motor_0), //                    .AY
-   .step_motor_driver_0_BX (BX_step_motor_0), //                    .BX
-   .step_motor_driver_0_BY (BY_step_motor_0), //                    .BY
-   .step_motor_driver_0_AE (AE_step_motor_0), //                    .AE
-   .step_motor_driver_0_BE (BE_step_motor_0), //                    .BE
-   .step_motor_driver_1_AX (AX_step_motor_1), // step_motor_driver_1.AX
-   .step_motor_driver_1_AY (AY_step_motor_1), //                    .AY
-   .step_motor_driver_1_BX (BX_step_motor_1), //                    .BX
-   .step_motor_driver_1_BY (BY_step_motor_1), //                    .BY
-   .step_motor_driver_1_AE (AE_step_motor_1), //                    .AE
-   .step_motor_driver_1_BE (BE_step_motor_1), //                    .BE
+	//<Web_desing_part_start>
+   .step_motor_driver_0_AX (), // step_motor_driver_0.AX
+   .step_motor_driver_0_AY (), //                    .AY
+   .step_motor_driver_0_BX (), //                    .BX
+   .step_motor_driver_0_BY (), //                    .BY
+   .step_motor_driver_0_AE (), //                    .AE
+   .step_motor_driver_0_BE (), //                    .BE
+   .step_motor_driver_1_AX (), // step_motor_driver_1.AX
+   .step_motor_driver_1_AY (), //                    .AY
+   .step_motor_driver_1_BX (), //                    .BX
+   .step_motor_driver_1_BY (), //                    .BY
+   .step_motor_driver_1_AE (), //                    .AE
+   .step_motor_driver_1_BE (), //                    .BE
    .step_motor_driver_2_AX (), // step_motor_driver_2.AX
    .step_motor_driver_2_AY (), //                    .AY
    .step_motor_driver_2_BX (), //                    .BX
@@ -453,10 +454,16 @@ frontier	b2v_inst(
    .step_motor_driver_4_AE (), //                    .AE
    .step_motor_driver_4_BE (),  //                    .BE
 	
-	.ad7490_adc_0_DOUT      (),      //        ad7490_adc_0.DOUT
-   .ad7490_adc_0_SCLK      (),      //                    .SCLK
-   .ad7490_adc_0_CSN       (),       //                    .CSN
-   .ad7490_adc_0_DIN       (),       //                    .DIN
+	.ad7490_0_DOUT      (IO_B22),      //        ad7490_adc_0.DOUT
+   .ad7490_0_SCLK      (IO_B23),      //                    .SCLK
+   .ad7490_0_DIN       (IO_B24),       //                    .DIN
+   .ad7490_0_CSN       (IO_B25),       //                    .CSN
+	
+	.ad7490_1_DOUT      (IO_A22),      //        ad7490_adc_1.DOUT
+   .ad7490_1_SCLK      (IO_A23),      //                    .SCLK
+   .ad7490_1_DIN       (IO_A24),       //                    .DIN
+   .ad7490_1_CSN       (IO_A25),       //                    .CSN
+	//</Web_desing_part_start>
 	
 	//.m0_EINT(M1_EINT)
 	
