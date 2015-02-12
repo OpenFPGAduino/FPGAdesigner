@@ -6,6 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <style type="text/css">
+  #apDiv1 {
+	position: absolute;
+	left: 30px;
+	top: 197px;
+	width: 267px;
+	height: 208px;
+	z-index: 1;
+}
+  #apDiv2 {
+	position: absolute;
+	left: 327px;
+	top: 201px;
+	width: 267px;
+	height: 208px;
+	z-index: 1;
+}
+  </style>
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="js/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -29,10 +47,61 @@
     
 </head>
 <body>
+<div class="bs-docs-example">
+            <div class="well well-small">
+              Look, I'm in a well!
+            </div>
+          </div>
 
 
+  <div id="apDiv1">
+    <p>IOB </p>
+    <table width="200" border="1">
+      <tr>
+        <td>1</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    <p>&nbsp;</p>
+  </div>
+  <div id="apDiv2">
+  IOA
+  </div>  
+
+  <span onclick="run()" class="btn btn-success" title="run the program">
+    run
+  </span>
+  <span onclick="stop()" class="btn btn-warning" title="stop the progrtam">
+    stop
+  </span>
+  
+  <div class="btn-group">
+  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    Action
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <!-- dropdown menu links -->
+  </ul>
+</div>
 <script>
-    var debug = false;
+    var debug = true;
 	function debuginf(string) {
 		if (debug == true) {
 			console.log(string);
@@ -94,63 +163,19 @@
 		return str.match(re);
 	}
 	
-	function load_api() {
+	function load_module() {
 		var xhr = new XMLHttpRequest();	
 		xhr.open("get","grid.v",false);
 		xhr.send();
-		var api_doc = xhr.responseText;
+		var module = xhr.responseText;
 		debuginf(api_doc);
-		var api_doc_lines = api_doc.split('\n');
-		debuginf(api_doc_lines);
+		var module_lines = module.split('\n');
+		debuginf(module_lines);
 		var html_list = "";
 		var i = 0, j = 0;
 		var math;
 		var comments_html = "";
-		while (i < api_doc_lines.length) {
-			while(math = is_comments(api_doc_lines[i])) {
-				comments_html += '<p>' + math[1] + '</p>';
-				i++;
-			}
-			if(func = is_function_type(api_doc_lines[i])) {
-				html_list += '<div class="panel panel-default"> \
-				<div class="panel-heading"> \
-				<a data-toggle="collapse" data-parent="#accordion" href="#collapse'+ j +'"> \
-				<div class="alert alert-info" role="alert"><b>' + api_doc_lines[i] + '</b></div> \
-				</a> \
-				</div> \
-				<div id="collapse'+ j + '" class="panel-collapse collapse"> \
-				<div class="panel-body">' 
-				j++;
-				html_list += comments_html;
-				html_list +=
-				'</div> \
-				</div> \
-				</div>'
-				comments_html = "";
-                debuginf(func[1]);
-			}
-			i++;
-		}
-		debuginf(html_list);
-		document.getElementById("accordion").innerHTML = html_list;
 	}
-	
-	var dom = require("ace/lib/dom");
-	//add command to all new editor instaces
-	require("ace/commands/default_commands").commands.push({
-		name: "Toggle Fullscreen",
-		bindKey: "F11",
-		exec: function(editor) {
-			dom.toggleCssClass(document.body, "fullScreen")
-			dom.toggleCssClass(editor.container, "fullScreen")
-			editor.resize()
-		}
-	})
-	
-	// create first editor
-	var editor = ace.edit("editor");
-	editor.setTheme("ace/theme/tomorrow");
-	editor.session.setMode("ace/mode/c_cpp");
 	
 	// event handle for webpage
 	function save() {
@@ -167,28 +192,11 @@
 	
 	function run() {
 		var code = editor.getValue();
-		debuginf("run");
+		debuginf("build");
 		debuginf(code);
-		ajax_rest_post("run",code);
+		ajax_rest_post("build",code);
 	}
 	
-	function stop() {
-		debuginf("stop");
-		ajax_rest_post("stop");
-	}
-	
-	function reboot() {
-		debuginf("reboot");
-		ajax_rest_post("reboot");
-	}
-	
-	function configrations(event){
-		var version = event.srcElement.innerText;
-		document.getElementById('broadpic').src = 'config/'+version+'.jpg';
-		debuginf("configrations");
-		debuginf(version);
-		ajax_rest_post("config",version);
-	}
 	
 	function load_example(event) {
 		var example = event.srcElement.innerText;
@@ -269,7 +277,6 @@
 	}
 	
 	window.onload=function() {
-		load_config_list();
 		load_example_list();
 	}
 	

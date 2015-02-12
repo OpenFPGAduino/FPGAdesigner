@@ -96,7 +96,7 @@ http.createServer(function (req, res) {
 
 	}
 
-	if (path.basename(pathname) =="generate") {
+	if (path.basename(pathname) =="build") {
 		debuginf("synthsis the design");
 		pathname = path.dirname(pathname);
 
@@ -113,29 +113,14 @@ http.createServer(function (req, res) {
 		  code = code.arg1;
 	      
 	      debuginf(code);
-              fs.writeFileSync('main.c', code);	      
-	      var command;
-              if (simulation == true)
-              {
-                    command  = "gcc main.c -o main";
-              } else {
-                    command  = "gcc main.c api/libAdunino.a -o main";
-              }
+          fs.writeFileSync('grid.v', code);	      
+          var command;
+              command  = "make";
               p.exec(command,
               	      function (error,stdout,stderr) {
         	      		if (error !== null) {
-        	      		  debuginf('compile error:');
+        	      		  debuginf('build error:');
         				  error_message += stderr + stdout;
-        	      	    } else {
-        	      	      shell = p.exec('$(pwd)/main',
-        	              	      function (error,stdout,stderr) {
-        	        	      		if (error !== null) {
-        	        	      		  debuginf('run error:');
-        	        				  error_message += stderr;
-        	        	      	    } else {
-
-        	        	      	    }
-        	      	      });
         	      	      shell.stdout.on('data', function (data) {
         	      	    	  console_message += data;
         	      	      });
