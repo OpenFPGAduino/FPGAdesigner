@@ -93,6 +93,7 @@ module grid(
 	IO_B_LOE,
 	IO_A_SDA,
 	IO_B_SDA,
+	//<io_part>
 	IO_B0,
 	IO_B1,
 	IO_B2,
@@ -145,6 +146,7 @@ module grid(
 	IO_B8,
 	IO_B10,
 	IO_B11,
+	//</io_part>
 	ISI_DATA,
 	M1_DATA,
 	M1_EINT,
@@ -422,7 +424,7 @@ frontier	b2v_inst(
 	.led_f3_G(LED_F3G),
 	.led_f3_B(LED_F3B),
 
-	//<Web_desing_part_start>
+	//<module_part>
    .step_motor_driver_0_AX (), // step_motor_driver_0.AX
    .step_motor_driver_0_AY (), //                    .AY
    .step_motor_driver_0_BX (), //                    .BX
@@ -454,16 +456,16 @@ frontier	b2v_inst(
    .step_motor_driver_4_AE (), //                    .AE
    .step_motor_driver_4_BE (),  //                    .BE
 	
-	.ad7490_0_DOUT      (IO_B22),      //        ad7490_adc_0.DOUT
-   .ad7490_0_SCLK      (IO_B23),      //                    .SCLK
-   .ad7490_0_DIN       (IO_B24),       //                    .DIN
-   .ad7490_0_CSN       (IO_B25),       //                    .CSN
+   .ad7490_0_DOUT      (),      //        ad7490_adc_0.DOUT
+   .ad7490_0_SCLK      (),      //                    .SCLK
+   .ad7490_0_DIN       (),       //                    .DIN
+   .ad7490_0_CSN       (),       //                    .CSN
 	
-	.ad7490_1_DOUT      (IO_A22),      //        ad7490_adc_1.DOUT
-   .ad7490_1_SCLK      (IO_A23),      //                    .SCLK
-   .ad7490_1_DIN       (IO_A24),       //                    .DIN
-   .ad7490_1_CSN       (IO_A25),       //                    .CSN
-	//</Web_desing_part_start>
+	.ad7490_1_DOUT     (),      //        ad7490_adc_1.DOUT
+   .ad7490_1_SCLK      (),      //                    .SCLK
+   .ad7490_1_DIN       (),       //                    .DIN
+   .ad7490_1_CSN       (),       //                    .CSN
+	//</module_part>
 	
 	//.m0_EINT(M1_EINT)
 	

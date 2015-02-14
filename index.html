@@ -7,22 +7,6 @@
   <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
   <style type="text/css">
-  #apDiv1 {
-	position: absolute;
-	left: 30px;
-	top: 197px;
-	width: 267px;
-	height: 208px;
-	z-index: 1;
-}
-  #apDiv2 {
-	position: absolute;
-	left: 327px;
-	top: 201px;
-	width: 267px;
-	height: 208px;
-	z-index: 1;
-}
   </style>
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="js/jquery.min.js"></script>
@@ -47,71 +31,88 @@
     
 </head>
 <body>
-<div class="bs-docs-example">
-            <div class="well well-small">
-              Look, I'm in a well!
-            </div>
-          </div>
 
-      <div class="input-group">
-         <span class="input-group-addon">IOA1</span>
-         <input type="text" class="form-control" placeholder="twitterhandle">
-      </div>
-      <div class="input-group">
-         <span class="input-group-addon">IOA2</span>
-         <input type="text" class="form-control" placeholder="twitterhandle">
-      </div>
-      <div class="input-group">
-         <span class="input-group-addon">IOA3</span>
-         <input type="text" class="form-control" placeholder="twitterhandle">
-      </div>
-
-  <div id="apDiv1">
-    <p>IOB </p>
-    <table width="200" border="1">
-      <tr>
-        <td>1</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>&nbsp;</td>
-      </tr>
-    </table>
-    <p>&nbsp;</p>
-  </div>
-  <div id="apDiv2">
-  IOA
-  </div>  
-
-  <span onclick="run()" class="btn btn-success" title="run the program">
-    run
-  </span>
-  <span onclick="stop()" class="btn btn-warning" title="stop the progrtam">
-    stop
-  </span>
-  
-  <div class="btn-group">
-  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-    Action
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu">
-    <!-- dropdown menu links -->
-  </ul>
+<div class="input-group" id="io">
 </div>
+<div id="module">
+</div>
+
+<span onclick="build()" class="btn btn-success" title="run the program">
+    Build
+</span>
+<span onclick="download()" class="btn btn-warning" title="stop the progrtam">
+    Download
+</span>
+
+</div>
+
+<div class="panel panel-default">
+<span onclick="clean_error()" class="btn btn-warning" title="clear the error log">
+    Clear error
+  </span>
+<div class="panel-heading">
+    <a data-toggle="collapse" data-parent="#accordion" href="#error">
+    <div class="alert alert-error" role="alert"><b>Error</b>
+    </div>
+    </a>
+</div>
+<div id="error" class="panel-collapse collapse in">
+  </div>
+</div>
+</div>
+<div>
+
+<div class="panel panel-default">
+<span onclick="clean_console()" class="btn btn-warning" title="clear the console log">
+    Clear console
+	</span>
+<div class="panel-heading">
+    <a data-toggle="collapse" data-parent="#accordion" href="#console">
+    <div class="alert alert-info" role="alert"><b>Console</b>
+    </div>
+    </a>
+</div>
+<div id="console" class="panel-collapse collapse in">
+  </div>
+</div>
+</div>
+<div>
+
+<!-- Save file dialog -->
+<div class="modal hide fade" id="savedialog">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<h3>Save the program</h3>
+</div>
+<div class="modal-body">
+<div class="input-group">
+  <input id="dialog_filename" type="text" class="form-control" placeholder="filename">
+    <span class="input-group-addon">.v</span>
+</div>
+</div>
+<div class="modal-footer">
+<a href="#"  data-dismiss="modal" class="btn">close</a>
+<a href="#"  data-dismiss="modal" class="btn btn-primary" onclick="save()" >save</a>
+</div>
+</div>
+
+<!-- pop dialog -->
+<div class="modal hide fade" id="popdialog">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+<h3>Are you sure to delete?</h3>
+</div>
+<div class="modal-body">
+<div class="input-group">
+<p id="pop_message"></p>
+</div>
+</div>
+<div class="modal-footer">
+<a href="#"  data-dismiss="modal" class="btn">No</a>
+<a href="#"  data-dismiss="modal" class="btn btn-primary" onclick="do_delete_example()" >Yes</a>
+</div>
+</div>
+
 <script>
     var debug = true;
 	function debuginf(string) {
@@ -153,41 +154,110 @@
 		document.getElementById("Ex").innerHTML = html_list;
 	}
 	
-	function get_design_part(verilog)
+	function is_io_part_start(str)
 	{
-		var verilog_lines = verilog.split('\n');
-		var re = new RegExp("<Web_desing_part_start>");
-		return str.match(re);
-		var re = new RegExp("</Web_desing_part_start>");
-		return str.match(re);
-
-	}
-	
-	function is_function_type(str)
-	{
-		var re = new RegExp("\\.*\\s([^\\(\\s]+)\\(.*\\);");
+		var re = new RegExp("<io_part>");
 		return str.match(re);
 	}
 	
-	function is_comments(str)
+	function is_io_part_end(str)
 	{
-		var re = new RegExp(".*//(.*)");
+		var re = new RegExp("</io_part>");
 		return str.match(re);
 	}
 	
-	function load_module() {
+	function is_module_part_start(str)
+	{
+		var re = new RegExp("<module_part>");
+		return str.match(re);
+	}
+	
+	function is_module_part_end(str)
+	{
+		var re = new RegExp("</module_part>");
+		return str.match(re);
+	}
+	
+	function is_connect(str)
+	{
+		var re = new RegExp("\\.(.*)\\(.*\\)");
+		return str.match(re);
+	}
+	
+	function is_io(str)
+	{
+		var re = new RegExp("(.*),");
+		//var re = new RegExp(".*//(.*)");
+		return str.match(re);
+	}
+	
+	var connect_pin_name_list = new Array();
+	var connect_module_name_list = new Array();
+	var io_pin_name_list = new Array();
+	function load_template() {
 		var xhr = new XMLHttpRequest();	
 		xhr.open("get","grid.v",false);
 		xhr.send();
-		var module = xhr.responseText;
-		debuginf(api_doc);
-		var module_lines = module.split('\n');
-		debuginf(module_lines);
-		var html_list = "";
-		var i = 0, j = 0;
-		var math;
-		var comments_html = "";
+		var template = xhr.responseText;
+		debuginf(template);
+		var template_lines = template.split('\n');
+		debuginf(template_lines);
+		var connect_line = new Array();
+		var io_line = new Array();
+		var i=0, start = false;
+		for (line in template_lines) {
+			if(is_module_part_start(template_lines[line])) {
+				start = true;
+			} else if (is_module_part_end(template_lines[line])) {
+				break;
+			} else if (start) {
+				connect_line[i] = template_lines[line];
+				i++;
+			}
+		}
+		debuginf(connect_line);
+		var connect;
+		for (line in connect_line) {
+			if (connect = is_connect(connect_line[line])) {
+				connect_pin_name_list.push((connect[1]));
+			}
+		}
+		start = false;
+		for (line in template_lines) {
+			if(is_io_part_start(template_lines[line])) {
+				start = true;
+			} else if (is_io_part_end(template_lines[line])) {
+				break;
+			} else if (start) {
+				io_line[i] = template_lines[line];
+				i++;
+			}
+		}
+		debuginf(io_line);
+		for (line in io_line) {
+			if (connect = is_io(io_line[line])) {
+				io_pin_name_list.push((connect[1]));
+			}
+		}		
 	}
+	
+	function load_module() {
+		for (line in connect_pin_name_list) {
+			document.getElementById("module").innerHTML += "<p>"+ connect_pin_name_list[line]+"<\p>";
+		}
+	}
+
+	function load_io() {
+		for (line in io_pin_name_list) {
+			var html = '<span class="input-group-addon">';
+			html += io_pin_name_list[line]; 
+			html += '</span>';
+			html += '<input id="io_pin';
+			html += line;
+			html += '" type="text" class="form-control" placeholder="Pin to connect">'
+			document.getElementById("io").innerHTML += html;
+		}
+	}	
 	
 	// event handle for webpage
 	function save() {
@@ -202,18 +272,18 @@
 			return false;
 	}
 	
-	function run() {
-		var code = editor.getValue();
+	var io_map = new Array();
+	function build() {
 		debuginf("build");
-		debuginf(code);
-		ajax_rest_post("build",code);
+		debuginf(document.getElementById("io_pin1").value);
+		//ajax_rest_post("build","");
 	}
 	
 	
 	function load_example(event) {
 		var example = event.srcElement.innerText;
 		debuginf(example);
-		var file = example+'.c';
+		var file = example+'.v';
 		debuginf("load code");
 		var xhr = new XMLHttpRequest();	
 		xhr.open("get","program/"+file,false);
@@ -224,11 +294,10 @@
 		editor.clearSelection();
 	}
 	
-
 	var timer = null;
 	function mousedown(event){
 		load_example(event);
-		timer = setTimeout(function() {delete_example(event)}, 1500 );//set the timeout
+		timer = setTimeout(function() {delete_example(event)}, 1500 );	//set the timeout
 	};
 	function mouseup(event){
 		clearTimeout(timer);
@@ -285,11 +354,12 @@
 	}
 	function page_refresh() {
 		setTimeout('delay_refresh()',60000); 
-
 	}
 	
 	window.onload=function() {
-		load_example_list();
+		load_template();
+		load_io();
+		load_module();
 	}
 	
 </script>
