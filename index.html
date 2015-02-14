@@ -194,11 +194,12 @@
 	var connect_pin_name_list = new Array();
 	var connect_module_name_list = new Array();
 	var io_pin_name_list = new Array();
+	var template;
 	function load_template() {
 		var xhr = new XMLHttpRequest();	
 		xhr.open("get","grid.v",false);
 		xhr.send();
-		var template = xhr.responseText;
+		template = xhr.responseText;
 		debuginf(template);
 		var template_lines = template.split('\n');
 		debuginf(template_lines);
@@ -272,11 +273,19 @@
 			return false;
 	}
 	
-	var io_map = new Array();
 	function build() {
 		debuginf("build");
-		debuginf(document.getElementById("io_pin1").value);
-		//ajax_rest_post("build","");
+		for(i = 0;i < io_pin_name_list.length;i++) {
+			var name = "io_pin"+i;
+			var io_map = document.getElementById(name).value;	
+			if (io_map == "")
+				continue; 
+			var reg=new RegExp(io_map+"(.*)\\(.*\\)");	
+			var rep= io_map+"("+io_pin_name_list[i]+")";
+			template = template.replace(reg,rep);
+		}
+		debuginf(template);
+		ajax_rest_post("build",template);
 	}
 	
 	

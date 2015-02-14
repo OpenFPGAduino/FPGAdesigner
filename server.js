@@ -113,17 +113,14 @@ http.createServer(function (req, res) {
 		  code = code.arg1;
 	      
 	      debuginf(code);
-          fs.writeFileSync('grid.v', code);	      
+          fs.writeFileSync('grid1.v', code);	      
           var command;
-              command  = "make";
+              command = "make";
               p.exec(command,
               	      function (error,stdout,stderr) {
         	      		if (error !== null) {
         	      		  debuginf('build error:');
         				  error_message += stderr + stdout;
-        	      	      shell.stdout.on('data', function (data) {
-        	      	    	  console_message += data;
-        	      	      });
         	      	    } 
         	  });
         });
