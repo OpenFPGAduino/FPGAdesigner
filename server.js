@@ -108,23 +108,26 @@ http.createServer(function (req, res) {
 	      req.addListener("end",function(postDataChunk){
 	      code += postDataChunk;
 	      debuginf(code);
-		  code = querystring.parse(code); 
+              code = querystring.parse(code); 
 		  debuginf(code);
 		  code = code.arg1;
 	      
 	      debuginf(code);
-          fs.writeFileSync('grid1.v', code);	      
+          fs.writeFileSync('../fpga/grid.v', code);	      
           var command;
-              command = "make";
-              p.exec(command,
-              	      function (error,stdout,stderr) {
+              command = "./build.sh";
+      	      shell = p.exec(command,
+                  function (error,stdout,stderr) {
         	      		if (error !== null) {
         	      		  debuginf('build error:');
-        				  error_message += stderr + stdout;
-        	      	    } 
-        	  });
-        });
-	}
+        				  error_message += stderr;
+        	      	        }
+      	      });
+      	      shell.stdout.on('data', function (data) {
+      	    	  console_message += data;
+      	      });
+	  });
+        }
 
 	// response of error message
 	if (path.basename(pathname) =="error") {
