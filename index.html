@@ -249,15 +249,22 @@
 	}
 
 	function load_io() {
+		var i = 1;
+		var html ='<p>';
 		for (line in io_pin_name_list) {
-			var html = '<span class="input-group-addon">';
+		    html += '<span class="input-group-addon">';
 			html += io_pin_name_list[line]; 
 			html += '</span>';
 			html += '<input id="io_pin';
 			html += line;
 			html += '" type="text" class="form-control" placeholder="Pin to connect">'
-			document.getElementById("io").innerHTML += html;
+			if (i%2 == 0) {
+				html += '</p><p>'
+			}
+			i++;
 		}
+		html += '</p>';
+		document.getElementById("io").innerHTML += html;
 	}	
 	
 	// event handle for webpage
