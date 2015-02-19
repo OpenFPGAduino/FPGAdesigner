@@ -176,6 +176,7 @@ http.createServer(function (req, res) {
 					break;
 				case ".v":
 					res.writeHead(200, {"Content-Type": "text/html"});
+					pathname = "../fpga/package/template.v";
 					break;
 				default:
 					res.writeHead(200, {"Content-Type": "application/octet-stream"});
