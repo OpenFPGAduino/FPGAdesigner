@@ -178,6 +178,11 @@ http.createServer(function (req, res) {
 					res.writeHead(200, {"Content-Type": "text/html"});
 					pathname = "../fpga/package/template.v";
 					break;
+				case ".rbf":
+					res.writeHead(200, {"Content-Type": "application/octet-stream"});
+					pathname = "../fpga/output/grid.rbf";
+					debuginf("lizhizhou");
+					break;	
 				default:
 					res.writeHead(200, {"Content-Type": "application/octet-stream"});
 			}
@@ -185,8 +190,26 @@ http.createServer(function (req, res) {
 				res.end(data);
 			});
 		} else {
+			switch(path.extname(pathname)){
+		case ".v":
+			res.writeHead(200, {"Content-Type": "text/html"});
+			pathname = "../fpga/package/template.v";
+			fs.readFile(pathname,function (err,data){
+				res.end(data);
+			});
+			break;
+		case ".rbf":
+			res.writeHead(200, {"Content-Type": "application/octet-stream"});
+			pathname = "../fpga/output/grid.rbf";
+			debuginf("lizhizhou");
+			fs.readFile(pathname,function (err,data){
+				res.end(data);
+			});
+			break;	
+		default:	
 			res.writeHead(404, {"Content-Type": "text/html"});
 			res.end("<h1>404 Not Found</h1>");
+			}
 		}
 	});
 
