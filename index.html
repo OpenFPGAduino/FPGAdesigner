@@ -40,10 +40,9 @@
 <span onclick="build()" class="btn btn-success" title="run the program">
     Build
 </span>
-<span href="grid.rbf" class="btn btn-warning" title="stop the progrtam">
+<span onclick="download()" class="btn btn-warning" title="stop the progrtam">
     Download
 </span>
-<a href="grid.rbf"> test download</a> 
 </div>
 
 <div class="panel panel-default">
@@ -133,6 +132,10 @@
 			post += encodeURIComponent("arg2") + "=" + encodeURIComponent(arg2) + "&";
 		xhr.send(post);
 		debuginf(xhr.status);	
+	}
+
+	function download() {
+		window.location.pathname="grid.rbf"
 	}
 
 	function load_example_list() {
