@@ -265,7 +265,7 @@
 	
 	function is_module(str)
 	{
-		var re = new RegExp("\\S+(.+)\\.");
+		var re = new RegExp("//\\s+([^\\s]+)\\.");
 		return str.match(re);
 	}
 	
@@ -276,8 +276,20 @@
 		return str.match(re);
 	}
 	
+	function get_module_type_name(str)
+	{
+		return str.substring(0,str.length-2);
+	}
+	
+	function mach_module_type_name(str,type)
+	{
+		var re = new RegExp(type);
+		return str.match(re);
+	}
+	
 	var connect_pin_name_list = new Array();
 	var connect_module_name_list = new Array();
+	var module_tree_list = new Array();
 	var io_pin_name_list = new Array();
 	var template;
 	function load_template() {
@@ -302,13 +314,15 @@
 			}
 		}
 		debuginf(connect_line);
-		var connect;
+		var connect, module;
+		var connect_obj, module_obj, type_obj;
 		for (line in connect_line) {
-			if (connect = is_connect(connect_line[line])) {
-				connect_pin_name_list.push((connect[1]));
-			}
 			if (module = is_module(connect_line[line])) {
 				connect_module_name_list.push((module[1]));
+				debuginf(get_module_type_name(module[1]));
+			}
+			if (connect = is_connect(connect_line[line])) {
+				connect_pin_name_list.push((connect[1]));
 			}
 		}
 		debuginf(connect_module_name_list);
@@ -383,7 +397,6 @@
 		debuginf(template);
 		ajax_rest_post("build",template);
 	}
-	
 	
 	function load_example(event) {
 		var example = event.srcElement.innerText;
