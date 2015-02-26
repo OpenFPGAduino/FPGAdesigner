@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/style.css" rel="stylesheet" media="screen">
   <style type="text/css">
   </style>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -262,6 +263,12 @@
 		return str.match(re);
 	}
 	
+	function is_module(str)
+	{
+		var re = new RegExp("\\S+(.+)\\.");
+		return str.match(re);
+	}
+	
 	function is_io(str)
 	{
 		var re = new RegExp("(.*),");
@@ -300,7 +307,11 @@
 			if (connect = is_connect(connect_line[line])) {
 				connect_pin_name_list.push((connect[1]));
 			}
+			if (module = is_module(connect_line[line])) {
+				connect_module_name_list.push((module[1]));
+			}
 		}
+		debuginf(connect_module_name_list);
 		start = false;
 		for (line in template_lines) {
 			if(is_io_part_start(template_lines[line])) {
