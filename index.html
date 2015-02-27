@@ -17,6 +17,7 @@
 	$(function(){
 	    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
 	    $('.tree li.parent_li > span').on('click', function (e) {
+	    
 	        var children = $(this).parent('li.parent_li').find(' > ul > li');
 	        if (children.is(":visible")) {
 	            children.hide('fast');
@@ -30,7 +31,7 @@
 	});
   </script>
   <!--
-  Author:  Zhizhou Li <lzz@meteroi.com>
+  Author:  Zhizhou Li <lzz@meteroi.com> 
  
   Copyright 2015 Meteroi
     This program is free software: you can redistribute it and/or modify
@@ -51,63 +52,25 @@
 
 <div class="input-group" id="io">
 </div>
-<div class="tree well" id="module">
-<ul>
-	<li>
-		<span><i class="icon-folder-open"></i> Parent</span> <a href="">Goes somewhere</a>
-		<ul>
-			<li>
-				<span><i class="icon-minus-sign"></i> Child</span> <a href="">Goes somewhere</a>
-				<ul>
-					<li>
-						<span><i class="icon-leaf"></i> Grand Child</span> <a href="">Goes somewhere</a>
-					</li>
-				</ul>
-			</li>
-			<li>
-				<span><i class="icon-minus-sign"></i> Child</span> <a href="">Goes somewhere</a>
-				<ul>
-					<li>
-						<span><i class="icon-leaf"></i> Grand Child</span> <a href="">Goes somewhere</a>
-					</li>
-					<li>
-						<span><i class="icon-minus-sign"></i> Grand Child</span> <a href="">Goes somewhere</a>
-						<ul>
-							<li>
-								<span><i class="icon-minus-sign"></i> Great Grand Child</span> <a href="">Goes somewhere</a>
-								<ul>
-									<li>
-										<span><i class="icon-leaf"></i> Great great Grand Child</span> <a href="">Goes somewhere</a>
-									</li>
-									<li>
-										<span><i class="icon-leaf"></i> Great great Grand Child</span> <a href="">Goes somewhere</a>
-									</li>
-								 </ul>
-							</li>
-							<li>
-								<span><i class="icon-leaf"></i> Great Grand Child</span> <a href="">Goes somewhere</a>
-							</li>
-							<li>
-								<span><i class="icon-leaf"></i> Great Grand Child</span> <a href="">Goes somewhere</a>
-							</li>
-						</ul>
-					</li>
-					<li>
-						<span><i class="icon-leaf"></i> Grand Child</span> <a href="">Goes somewhere</a>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</li>
-	<li>
-		<span><i class="icon-folder-open"></i> Parent2</span> <a href="">Goes somewhere</a>
-		<ul>
-			<li>
-				<span><i class="icon-leaf"></i> Child</span> <a href="">Goes somewhere</a>
-			</li>
-		</ul>
-	</li>
-</ul>
+<div class="tree well" id="module">                                                                
+</div>
+
+<div class="tree well">
+<ul>                                                                      
+	<li>                                                                      
+		<span><i class="icon-folder-open"></i> Parent</span>                  
+		<ul>                                                                  
+			<li>                                                              
+				<span><i class="icon-minus-sign"></i> Child</span>            
+				<ul>                                                          
+					<li>                                                      
+						<span><i class="icon-leaf"></i> Grand Child</span>    
+					</li>                                                     
+				</ul>                                                         
+			</li>                                                             
+		</ul>                                                                 
+	</li>                                                                     
+</ul>                                                                        
 </div>
 
 <span onclick="build()" class="btn btn-success" title="run the program">
@@ -356,16 +319,49 @@
 		}		
 	}
 	
+	var test = 
+'	<ul>                                                                         '   +
+'	<li>                                                                         '   +
+'		<span><i class="icon-folder-open"></i> Parent</span>                     '   +
+'		<ul>                                                                     '   +
+'			<li>                                                                 '   +
+'				<span><i class="icon-minus-sign"></i> Child</span>               '   +
+'				<ul>                                                             '   +
+'					<li>                                                         '   +
+'						<span><i class="icon-leaf"></i> Grand Child</span>       '   +
+'					</li>                                                        '   +
+'				</ul>                                                            '   +
+'			</li>                                                                '   +
+'		</ul>                                                                    '   +
+'	</li>                                                                        '   +
+'</ul>                                                                          '
+	
 	function load_module() {
+		var innerHTML = '<ul>';
+			innerHTML += '<li>';
 		for (type in module_tree) {
-			document.getElementById("module").innerHTML += 
-			'<span><i class="icon-folder-open"></i> '+ module_tree[type].name +'</span>';
+			innerHTML += '<span><i class="icon-folder-open"></i> '+ module_tree[type].name +'</span>';
+			innerHTML += '<ul>';
 			var module_list = module_tree[type].module;
 			for (module in module_list) {
-				document.getElementById("module").innerHTML += 
-				'<span><i class="icon-minus-sign"></i> '+ module_list[module].name +'</span>';
+				innerHTML += '<li>';
+				innerHTML += '<span><i class="icon-minus-sign"></i> '+ module_list[module].name +'</span>';
+				innerHTML += '<ul>';
+				var connect_list = module_list[module].connect
+				for(connect in connect_list) {
+					innerHTML += '<li>'
+					innerHTML += '<span><i class="icon-leaf"></i> '+ connect_list[connect] +'</span>';
+					innerHTML += '</li>';
+				}
+				innerHTML += '</ul>';
+				innerHTML += '</li>';
 			}
+			innerHTML += '</ul>';
 		}
+		innerHTML += '</li>';
+		innerHTML += '</ul>';
+		//document.getElementById("module").innerHTML += innerHTML;
+		document.getElementById("module").innerHTML += test;
 	}
 
 	function load_io() {
@@ -378,7 +374,7 @@
 			html += '<input id="io_pin';
 			html += line;
 			html += '" type="text" class="form-control" placeholder="Pin to connect">'
-			if (i%2 == 0) {
+			if (i%4 == 0) {
 				html += '</p><p>'
 			}
 			i++;
