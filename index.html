@@ -51,10 +51,7 @@
 
 <div class="input-group" id="io">
 </div>
-<div id="module">
-</div>
-
-<div class="tree well">
+<div class="tree well" id="module">
 <ul>
 	<li>
 		<span><i class="icon-folder-open"></i> Parent</span> <a href="">Goes somewhere</a>
@@ -287,6 +284,7 @@
 		return str.match(re);
 	}
 	
+	var module_tree = new Array();
 	var connect_pin_name_list = new Array();
 	var connect_module_name_list = new Array();
 	var module_tree_list = new Array();
@@ -315,17 +313,30 @@
 		}
 		debuginf(connect_line);
 		var connect, module;
-		var connect_obj, module_obj, type_obj;
+		var type = new Object();
 		for (line in connect_line) {
-			if (module = is_module(connect_line[line])) {
-				connect_module_name_list.push((module[1]));
-				debuginf(get_module_type_name(module[1]));
+			if (match = is_module(connect_line[line])) {
+				name = get_module_type_name(match[1])
+				if (name != type.name) {
+					if (type.name != undefined)
+						module_tree.push(type);
+					type = new Object();
+					type.name = name;
+					type.module = new Array();
+				}
+				module = new Object();
+				module.name = match[1];
+				module.connect = new Array();
+				connect_module_name_list.push((match[1]));		
+				type.module.push(module);
 			}
-			if (connect = is_connect(connect_line[line])) {
-				connect_pin_name_list.push((connect[1]));
+			if (match = is_connect(connect_line[line])) {
+				type.module[type.module.length-1].connect.push(match[1]);
+				connect_pin_name_list.push((match[1]));
 			}
 		}
-		debuginf(connect_module_name_list);
+		module_tree.push(type); // the last node
+		debuginf(module_tree);
 		start = false;
 		for (line in template_lines) {
 			if(is_io_part_start(template_lines[line])) {
@@ -346,8 +357,14 @@
 	}
 	
 	function load_module() {
-		for (line in connect_pin_name_list) {
-			document.getElementById("module").innerHTML += "<p>"+ connect_pin_name_list[line]+"<\p>";
+		for (type in module_tree) {
+			document.getElementById("module").innerHTML += 
+			'<span><i class="icon-folder-open"></i> '+ module_tree[type].name +'</span>';
+			var module_list = module_tree[type].module;
+			for (module in module_list) {
+				document.getElementById("module").innerHTML += 
+				'<span><i class="icon-minus-sign"></i> '+ module_list[module].name +'</span>';
+			}
 		}
 	}
 
