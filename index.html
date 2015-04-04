@@ -37,7 +37,7 @@
 </div>
 <div class="tree well" id="module">                                                                
 </div>
-
+<a href="#savedialog" role="button" class="btn" data-toggle="modal" title="save the program">Save</a>
 <span onclick="build()" class="btn btn-success" title="run the program">
     Build
 </span>
@@ -120,6 +120,16 @@
 			console.log(string);
 		}
 	}
+	
+	function url_isExist(url) {
+		var xhr = new XMLHttpRequest();
+		var post;
+		xhr.open("HEAD",url,false);
+		xhr.send();
+		debuginf(xhr.status);	
+		return (xhr.status == 200)
+	}
+	
 	function ajax_rest_post(url, arg1, arg2) {
 		var xhr = new XMLHttpRequest();
 		var post;
@@ -136,7 +146,7 @@
 	}
 
 	function download() {
-		window.location.pathname="grid.rbf"
+		window.location.pathname="grid.tar.gz"
 	}
 
 	function load_example_list() {
