@@ -52,7 +52,9 @@ qiniu.conf.SECRET_KEY = '1UlARj0pqeAiL_ipBLke1Gm_HBGNL60KDrSDjUdX';
 
 var bucketname = 'openfpgaduino';
 var cloudname = 'http://7xi3cc.com1.z0.glb.clouddn.com/';
-var gzfilename = 'grid.tar.gz';
+var key = 'grid.tar.gz';
+var file_url = 'http://7xi3cc.com1.z0.glb.clouddn.com/grid.tar.gz';
+var DOWNLOAD_DIR = './';
 
 function uptoken(bucketname) {
   var putPolicy = new qiniu.rs.PutPolicy(bucketname);
@@ -89,30 +91,45 @@ function uploadFile(localFile, key, uptoken) {
   });
 }
 
-//http file download
-//App variables
-var file_url = 'http://7xi3cc.com1.z0.glb.clouddn.com/grid.tar.gz';
-var DOWNLOAD_DIR = './';
-//Function to download file using HTTP.get
-var download_file_httpget = function(file_url) {
-	var options = {
-	 host: url.parse(file_url).host,
-	 port: 80,
-	 path: url.parse(file_url).pathname
-	};
-	
-	var file_name = url.parse(file_url).pathname.split('/').pop();
-	var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
-	
-	http.get(options, function(res) {
-	 res.on('data', function(data) {
-	         file.write(data);
-	     }).on('end', function() {
-	         file.end();
-	         console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
-	     });
-	 });
-};
+var delay = 1000;
+function try_download_and_rm_File() {
+	var client = new qiniu.rs.Client();
+	client.stat(bucketname, key, function(err, ret) {
+	  if (!err) {
+	    // ok 
+	    // ret has keys (hash, fsize, putTime, mimeType)
+		var options = {
+		 host: url.parse(file_url).host,
+		 port: 80,
+		 path: url.parse(file_url).pathname
+		};
+		
+		var file_name = url.parse(file_url).pathname.split('/').pop();
+		var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
+		
+		http.get(options, function(res) {
+		 res.on('data', function(data) {
+		         file.write(data);
+		     }).on('end', function() {
+		         file.end();
+		         client.remove(bucketname, key, function(err, ret) {
+		        	  if (!err) {
+		        	    // ok
+		        	    console.log(ret); 
+		        	  } else {
+		        	    console.log(err);
+		        	    // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+		        	  }
+		         })
+		         console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
+		     });
+	    });  
+	    console.log(ret); 
+	  } else {
+		  setTimeout(try_download_and_rm_File, delay);
+	  }
+	});
+}
 
 //docker http trigger
 var https = require('https');
@@ -170,7 +187,7 @@ http.createServer(function (req, res) {
 		  code = code.arg2;
 		  debuginf(code);
 		  debuginf(filename);
-		  fs.writeFileSync('packeg/'+ filename +'.v', code);
+		  fs.writeFileSync(parent_dir+filename +'.v', code);
         });
 	}
 	
@@ -190,7 +207,7 @@ http.createServer(function (req, res) {
 		  debuginf(code);
 		  filename = code.arg1;
 		  debuginf(filename);
-		  fs.unlink('program/'+ filename +'.v');
+		  fs.unlink(parent_dir+ filename +'.v');
         });
 	}
 	
@@ -232,12 +249,11 @@ http.createServer(function (req, res) {
 	      	      });
 	      } else {
 	          fs.writeFileSync('grid.v', code);	      
-	          rmFile(bucketname, "grid.tar.gz");
-	          uploadBuf(grid.v, "filelist.txt", uptoken(bucketname));
+	          uploadBuf("grid.v", "filelist.txt", uptoken(bucketname));
 	          uploadBuf(code, "grid.v", uptoken(bucketname));
 	          dock_build();
+	          try_download_and_rm_File();
 	      }
-	  
 		  });
 
     }

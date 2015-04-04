@@ -44,6 +44,7 @@
 <span onclick="download()" class="btn btn-warning" title="stop the progrtam">
     Download
 </span>
+<span id="file_state" class="label label-success"></span>
 </div>
 
 <div class="panel panel-default">
@@ -449,7 +450,15 @@
 		document.getElementById("error").innerHTML += "<p>"+ get+"<\p>";
 	}; 
 	setInterval(error_polling, 1000);
-    
+	
+	function file_polling(){
+		if (url_isExist("grid.tar.gz")) 
+		document.getElementById("file_state").innerHTML = "File ready";
+		else
+		document.getElementById("file_state").innerHTML = "";
+	}
+    setInterval(file_polling, 1000);
+    	
 	function delay_refresh() {
 		window.location.reload(); 
 	}
