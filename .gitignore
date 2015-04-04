@@ -1,3 +1,5 @@
 *.o
 *~
 node_modules
+grid.tar.gz
+grid.v
