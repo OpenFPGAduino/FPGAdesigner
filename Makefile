@@ -1,2 +1,2 @@
 all:
-	@echo "build ready"
+	npm install qiniu;

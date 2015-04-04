@@ -23,6 +23,7 @@ var http = require("http"),
 	p = require('child_process');
 var simulation = false;
 var debug = false;
+var local = false;
 function debuginf(string) {
 	if (debug == true) {
 		console.log(string);
@@ -34,7 +35,7 @@ for (index in arguments)
 {
 	if (arguments[index]=="-sim") simulation=true;
         else if (arguments[index]=="-debug") debug=true;
-		
+        	else if  (arguments[index]=="-local") local=true;
 }
 
 var console_message = "";
