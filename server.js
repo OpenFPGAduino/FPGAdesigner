@@ -91,13 +91,12 @@ function uploadFile(localFile, key, uptoken) {
   });
 }
 
-var delay = 1000;
+var delay = 5000;
 function try_download_and_rm_File() {
 	var client = new qiniu.rs.Client();
 	client.stat(bucketname, key, function(err, ret) {
 	  if (!err) {
 	    // ok 
-	    // ret has keys (hash, fsize, putTime, mimeType)
 		var options = {
 		 host: url.parse(file_url).host,
 		 port: 80,
@@ -108,25 +107,27 @@ function try_download_and_rm_File() {
 		var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
 		
 		http.get(options, function(res) {
-		 res.on('data', function(data) {
-		         file.write(data);
-		     }).on('end', function() {
-		         file.end();
-		         client.remove(bucketname, key, function(err, ret) {
-		        	  if (!err) {
-		        	    // ok
-		        	    console.log(ret); 
-		        	  } else {
-		        	    console.log(err);
-		        	    // http://developer.qiniu.com/docs/v6/api/reference/codes.html
-		        	  }
-		         })
-		         console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
-		     });
-	    });  
+			console.log('STATUS: ' + res.statusCode);
+			console.log('HEADERS: ' + JSON.stringify(res.headers));
+		    res.on('data', function(data) {
+		            file.write(data);
+		        }).on('end', function() {
+		            file.end();
+		            console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
+			        client.remove(bucketname, key, function(err, ret) {
+			        	  if (!err) {
+			        	    // ok
+			        		  console.log("donwload ok");   
+			        	  } else {
+			        	    console.log(err);
+			        	  }
+			        })
+		        });
+		});
 	    console.log(ret); 
 	  } else {
 		  setTimeout(try_download_and_rm_File, delay);
+		  console.log("retry"); 
 	  }
 	});
 }
@@ -248,6 +249,7 @@ http.createServer(function (req, res) {
 	      	    	  console_message += data;
 	      	      });
 	      } else {
+			  fs.unlink('grid.tar.gz');
 	          fs.writeFileSync('grid.v', code);	      
 	          uploadBuf("grid.v", "filelist.txt", uptoken(bucketname));
 	          uploadBuf(code, "grid.v", uptoken(bucketname));
