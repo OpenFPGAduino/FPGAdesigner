@@ -144,9 +144,10 @@ function try_download_and_rm_File() {
 			console.log('STATUS: ' + res.statusCode);
 			console.log('HEADERS: ' + JSON.stringify(res.headers));
 		    res.on('data', function(data) {
-		            console_message += data;
+		            console_message += data.toString();
+		            console.log(console_message);
 		        }).on('end', function() {
-			        client.remove(bucketname, key, function(err, ret) {
+			        client.remove(bucketname, logfile, function(err, ret) {
 			        	  if (!err) {
 			        	    // ok
 			        		  console.log("donwload ok");   
