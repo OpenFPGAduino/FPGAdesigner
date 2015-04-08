@@ -27,6 +27,10 @@ var simulation = false;
 var debug = false;
 var local = false;
 var parent_dir = "";
+
+var console_message = "";
+var error_message = "";
+
 function debuginf(string) {
 	if (debug == true) {
 		console.log(string);
@@ -53,7 +57,9 @@ qiniu.conf.SECRET_KEY = '1UlARj0pqeAiL_ipBLke1Gm_HBGNL60KDrSDjUdX';
 var bucketname = 'openfpgaduino';
 var cloudname = 'http://7xi3cc.com1.z0.glb.clouddn.com/';
 var key = 'grid.tar.gz';
+var logfile = 'smart.log'
 var file_url = 'http://7xi3cc.com1.z0.glb.clouddn.com/grid.tar.gz';
+var log_url = 'http://7xi3cc.com1.z0.glb.clouddn.com/smart.log';
 var DOWNLOAD_DIR = './';
 
 function uptoken(bucketname) {
@@ -124,6 +130,32 @@ function try_download_and_rm_File() {
 			        })
 		        });
 		});
+
+		var options = {
+		 host: url.parse(log_url).host,
+		 port: 80,
+		 path: url.parse(log_url).pathname
+		};
+		
+		var file_name = url.parse(log_url).pathname.split('/').pop();
+		var file = fs.createWriteStream(DOWNLOAD_DIR + file_name);
+		
+		http.get(options, function(res) {
+			console.log('STATUS: ' + res.statusCode);
+			console.log('HEADERS: ' + JSON.stringify(res.headers));
+		    res.on('data', function(data) {
+		            console_message += data;
+		        }).on('end', function() {
+			        client.remove(bucketname, key, function(err, ret) {
+			        	  if (!err) {
+			        	    // ok
+			        		  console.log("donwload ok");   
+			        	  } else {
+			        	    console.log(err);
+			        	  }
+			        })
+		        });
+		});
 	    console.log(ret); 
 	  } else {
 		  setTimeout(try_download_and_rm_File, delay);
@@ -158,8 +190,6 @@ function dock_build() {
 	req.end();
 }
 
-var console_message = "";
-var error_message = "";
 
 http.createServer(function (req, res) {
 	var pathname=__dirname+url.parse(req.url).pathname;
