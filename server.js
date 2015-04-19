@@ -248,6 +248,22 @@ http.createServer(function (req, res) {
 		download_file_httpget(file_url);
 	}
 
+	if (path.basename(pathname) =="install") {
+		debuginf("install the file");
+		  var command;
+          command = "./install.sh";
+  	      shell = p.exec(command,
+              function (error,stdout,stderr) {
+    	      		if (error !== null) {
+    	      		  debuginf('build error:');
+    				  error_message += stderr;
+    	      	        }
+  	      });
+  	      shell.stdout.on('data', function (data) {
+  	    	  console_message += data;
+  	      });
+	}
+	
 	if (path.basename(pathname) =="build") {
 		debuginf("synthsis the design");
 		pathname = path.dirname(pathname);

@@ -38,11 +38,14 @@
 <div class="tree well" id="module">                                                                
 </div>
 <a href="#savedialog" role="button" class="btn" data-toggle="modal" title="save the program">Save</a>
-<span onclick="build()" class="btn btn-success" title="run the program">
+<span onclick="build()" class="btn btn-success" title="run the fpga file">
     Build
 </span>
-<span onclick="download()" class="btn btn-warning" title="stop the progrtam">
+<span onclick="download()" class="btn btn-warning" title="download the fpga file">
     Download
+</span>
+<span onclick="install()" class="btn btn-info" title="install the fpga file">
+    install
 </span>
 <span id="file_state" class="label label-success"></span>
 </div>
@@ -148,6 +151,10 @@
 
 	function download() {
 		window.location.pathname="grid.tar.gz"
+	}
+
+	function install() {
+		ajax_rest_post("install");
 	}
 
 	function load_example_list() {
