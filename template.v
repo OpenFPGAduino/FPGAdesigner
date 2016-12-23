@@ -480,8 +480,8 @@ frontier	b2v_inst(
     .steering_driver_13_export (),  //   steering_driver_13.export
     .steering_driver_14_export (),  //   steering_driver_14.export
     .steering_driver_15_export (),  //   steering_driver_15.export
-	 .fan_motor_driver_2_export (), //   fan_motor_driver_2.export
-	 .fan_motor_driver_4_export (), //   fan_motor_driver_4.export
+    .fan_motor_driver_2_export (), //   fan_motor_driver_2.export
+    .fan_motor_driver_4_export (), //   fan_motor_driver_4.export
     .fan_motor_driver_5_export (), //   fan_motor_driver_5.export
     .fan_motor_driver_6_export (), //   fan_motor_driver_6.export
     .fan_motor_driver_7_export (), //   fan_motor_driver_7.export
@@ -502,13 +502,22 @@ frontier	b2v_inst(
     .am2301_8_clk_1us          (),          //                     .clk_1us
     .grid_pwm_2_export         (),         //           grid_pwm_2.export
     .grid_pwm_1_export         (),         //           grid_pwm_1.export
-
+    .fan_motor_driver_4_export          (),          //              fan_motor_driver_4.export
+    .fan_motor_driver_5_export          (),          //              fan_motor_driver_5.export
+    .fan_motor_driver_6_export          (),          //              fan_motor_driver_6.export
+    .fan_motor_driver_7_export          (),          //              fan_motor_driver_7.export
+    .brush_motor_driver_6_HX            (),            //            brush_motor_driver_6.HX
+    .brush_motor_driver_6_HY            (),            //                                .HY
+    .brush_motor_driver_7_HX            (),            //            brush_motor_driver_7.HX
+    .brush_motor_driver_7_HY            (),            //                                .HY
+    .brush_motor_driver_8_HX            (),            //            brush_motor_driver_8.HX
+    .brush_motor_driver_8_HY            (),             //    
  
 	//</module_part>
 	
 	.m0_EINT(M1_EINT),
 	.m1_CLK(M1_CLK),
-   .m1_RSTN(M1_RSTN),   
+        .m1_RSTN(M1_RSTN),   
 	);
 
 	
